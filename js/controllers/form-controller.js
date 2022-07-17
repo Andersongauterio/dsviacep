@@ -66,9 +66,28 @@ async function handleInputCepChange(event) {
     }
 }
 
-async function handleBtnSaveClick(event) {
+function handleBtnSaveClick(event) {
     event.preventDefault();
-    listController.addCard(state.address);
+
+    const errors = addressService.getErrors(state.address);
+
+    const keys = Object.keys(errors); 
+
+    if (keys.length > 0) {
+
+        keys.forEach(key => {
+            setFormError(key, errors[key]);
+        });
+
+        //for (let i =0; i < keys.length; i++) {
+        //    setFormError(keys[i], errors[keys[i]]);
+        // }
+    }
+    else {
+        listController.addCard(state.address);
+        clearForm();
+    }
+
 }
 
 function handleBtnClearClick(event) {
@@ -81,6 +100,8 @@ function clearForm() {
     state.inputCity.value = "";
     state.inputNumber.value = "";
     state.inputStreet.value = "";
+
+    state.address = new Address();
 
     setFormError("cep", "");
     setFormError("number", "");
